@@ -1,0 +1,339 @@
+\documentclass[10pt]{article}
+\usepackage{extsizes}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{commath}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{graphics}
+\usepackage{gensymb}
+\usepackage{hyperref}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{subcaption}
+\usepackage{mathtools}
+\usepackage[mathscr]{euscript}
+\usepackage{hyperref}
+\usepackage{adjustbox}
+\linespread{1}
+\newtheorem{theorem}{Theorem}
+\newtheorem*{theorem*}{Theorem}
+\newtheorem{prop}{Proposition}
+\newtheorem*{prop*}{Proposition}
+
+\title{IO Problem Set 1}
+\author{Manu Navjeevan}
+\date{\today}
+
+\begin{document}
+\maketitle
+\section{Logit}
+\begin{enumerate}
+  \item The results from the first OLS Logit are given here. These results are obtained by regressingthe log ratio of $\frac{share_{\text{product}}}{share_{\text{outside option}}}$\footnote{encoded shareDiff} against product characteristics, price and a dummy for whether a promotion was being run at the time. For this first pass, we assume strict exogeneity of our errors, so that instrumentation is not needed:
+  \begin{table}[!htbp] \centering
+    \label{}
+  \begin{tabular}{@{\extracolsep{5pt}}lcc}
+  \\[-1.8ex]\hline
+  \hline \\[-1.8ex]
+  & \multicolumn{1}{c}{\textit{Dependent variable:}} \
+  \cr \cline{1-2}
+  \\[-1.8ex] & (1) \\
+  \hline \\[-1.8ex]
+   price & -1.515$^{***}$ \\
+    & (0.003) \\
+    & \\
+   prom & -2.163$^{***}$ \\
+    & (0.053) \\
+    & \\
+  \hline \\[-1.8ex]
+   Observations & 38545.0 \\
+   R${2}$ & 0.858 \\
+   Adjusted R${2}$ & 0.858 \\
+   Residual Std. Error & 3.02(df = 38542.0)  \\
+   F Statistic & 116599.339$^{***}$ (df = 2.0; 38542.0) \\
+  \hline
+  \hline \\[-1.8ex]
+  \textit{Note:} & \multicolumn{1}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\
+  \end{tabular}
+  \end{table}
+
+  \item The results from the second OLS  which includes product dummies are given in the Supplementary Tables Section. Other than including new variables, methodology is the same as in part 1 and we still assume strict exogeneity of our errors. To avoid colinearity, I included all brand dummies but supressed a constant in this specification. Qualitatively, adding brand dummies reduced the magnitude of the coeffecient on price and made the promotion coeffecient positive.
+
+  \item The full regression table will not be included here because of the number of regressors. However, I will report the coeffecients and standard deviations on the price and promotion characteristics. The coeffecient on price in this regression is -0.322 with a standard deviation of 0.01. The ccoeffecient on promotion is 0.3290 with a standard deviation of 0.011. This is a similar result to the previous question with just brand dummies. All results are significant at the alpha = 0.01 level.
+
+  \item Now I account for endogeneity of the errors using cost as a instrument. The results are given below, though to save space only the price and promotion coeffecients are reported:
+
+  \begin{table}[!htb]
+  \caption{First three logit specifications using wholesale cost to instrument}
+  \begin{center}
+  \begin{tabular}{lccc}
+  \hline
+            & shareDiff I & shareDiff II & shareDiff III  \\
+  \hline
+  priceHat1 & -1.4705     & -0.0053      & -0.0225        \\
+            & (0.0042)    & (0.0130)     & (0.0119)       \\
+  prom      & -2.2420     & 0.4333       & 0.4298         \\
+            & (0.0646)    & (0.0124)     & (0.0113)       \\
+  \hline
+  \end{tabular}
+  \end{center}
+  \end{table}
+
+  \item Results from using the Hausman Instrument are also given below:
+
+  \begin{table}[!htb]
+  \caption{First Three logit specifications using the Hausman Instrument}
+  \begin{center}
+
+  \begin{tabular}{lccc}
+  \hline
+            & shareDiff I & shareDiff II & shareDiff III  \\
+  \hline
+  priceHat2 & -1.5194     & -0.5128      & -0.5310        \\
+          & (0.0034)    & (0.0128)     & (0.0116)       \\
+  prom      & -2.0971     & 0.2948       & 0.2861         \\
+          & (0.0528)    & (0.0126)     & (0.0114)       \\
+  \hline
+  \end{tabular}
+  \end{center}
+  \end{table}
+
+  The two instruments give somewhat different specifications but this could be consistent with them affecting supply in different ways.
+
+  \item Now we move to calculate brand elasticities. To do this, we take the coeffecient alpha from the first regression and aggregate price and share by brand. We then use the analytical formulas for elasticities implied by the logit model to get the table of elasticities given below: \\
+
+  \resizebox{\columnwidth}{!}{%
+  \begin{tabular}{c|cccccccccccc}
+    Elasticity & Brand 1 & Brand 2 & Brand 3 & Brand 4 & Brand 5 & Brand 6 & Brand 7 & Brand 8 & Brand 9 & Brand 10 & Brand 11 \\
+    \hline
+    Brand 1	 & -1.814866	& -0.001717	& -0.001136	& -0.001161	& -0.000768	& -0.000353	& -0.000397	& -0.000330	& -0.000781	& -0.000921	& -0.000708 \\
+    Brand 2	 & -0.002024	& -2.621733	& -0.001641	& -0.001678	& -0.001110	& -0.000510	& -0.000574	& -0.000476	& -0.001128	& -0.001330	& -0.001023 \\
+    Brand 3	 & -0.002873	& -0.003523	& -3.723202	& -0.002382	& -0.001576	& -0.000724	& -0.000814	& -0.000676	& -0.001602	& -0.001888	& -0.001452 \\
+    Brand 4	 & -0.001214	& -0.001488	& -0.000984	& -1.572691	& -0.000666	& -0.000306	& -0.000344	& -0.000286	& -0.000677	& -0.000798	& -0.000613 \\
+    Brand 5	 & -0.002107	& -0.002583	& -0.001709	& -0.001746	& -2.730851	& -0.000531	& -0.000597	& -0.000496	& -0.001175	& -0.001385	& -0.001065 \\
+    Brand 6	 & -0.003342	& -0.004097	& -0.002710	& -0.002770	& -0.001833	& -4.331982	& -0.000947	& -0.000786	& -0.001863	& -0.002196	& -0.001688 \\
+    Brand 7	 & -0.001095	& -0.001342	& -0.000888	& -0.000907	& -0.000600	& -0.000276	& -1.419081	& -0.000258	& -0.000610	& -0.000719	& -0.000553 \\
+    Brand 8	 & -0.001477	& -0.001811	& -0.001198	& -0.001224	& -0.000810	& -0.000372	& -0.000419	& -1.915077	& -0.000824	& -0.000971	& -0.000746 \\
+    Brand 9	 & -0.001624	& -0.001992	& -0.001317	& -0.001346	& -0.000891	& -0.000409	& -0.000460	& -0.000382	& -2.105382	& -0.001068	& -0.000821 \\
+    Brand 10 & -0.000790	& -0.000968	& -0.000640	& -0.000655	& -0.000433	& -0.000199	& -0.000224	& -0.000186	& -0.000440	& -1.023502	& -0.000399 \\
+    Brand 11 & -0.001821	& -0.002233	& -0.001477	& -0.001510	& -0.000999	& -0.000459	& -0.000516	& -0.000429	& -0.001015	& -0.001197	& -2.360528 \\
+    \hline
+  \end{tabular}
+  } \\
+
+  In general, we can see that these are not realistic predictions from our model. While the own price elasticities may make sense, the cross price elasticities are far too low. This is a function of the shares being very low for all of our products and because elasticites do not depend on product characteristics. Further, the cross price elasticities are all negative, which suggests that these goods are all complements. This may not be a sensible prediction for the headache medicine market.
+\end{enumerate}
+
+\section{Random-Coeffecients Logit}
+
+\begin{enumerate}
+  \item Python code to do this is involved and is attached. To find the values of $\sigma_B$ and $\sigma_I$ I first ran a rough grid search over the area $[-1, 3] \times [-1, 3]$. Doing this I realized that the criterion function was obtaining minimum around values of $\sigma_B$ and $\sigma_I$ close to 0. With this in mind, I then ran a gradient descent minimization with a starting point of $(0.1,0.1)$. The gradient descent returned a minimum at $(\sigma_B, \sigma_I) = (0.1394, 0.0743)$. I then used these to recover the mean utilities and other coeffecients, given below:
+  \begin{table}[!htb]
+  \begin{center}
+  \begin{tabular}{|c| c|}
+      \hline
+      Coeffecient & Estimate \\
+      \hline
+      $\sigma_b$ & 0.1384 \\
+      $\sigma_I$ & 0.0743 \\
+      price & -0.45217 \\
+      promotion & -1.7133 \\
+      Brand 1 & -6.1956\\
+      Brand 2 & -12.7887 \\
+      Brand 3 & -11.9699 \\
+      Brand 4 & -6.0623\\
+      Brand 5 &  -4.8449 \\
+      Brand 6 &  -13.7221\\
+      Brand 7 & -6.6258 \\
+      Brand 8 & -7.2018\\
+      Brand 9 & -5.9018\\
+      Brand 10 & -16.4058\\
+      Brand 11 & -8.6397\\
+      \hline
+  \end{tabular}
+  \caption{Estimated Random-Coeffecients Logit Model (BLP) Parameters}
+  \end{center}
+\end{table}
+  \item Estimated cross price elasticiteis were given by taking derivatives of the share function with respect to price. Dominated convergence allows us to bring the derivatives into the integration. The integrals are then numerically solved. The results are given below:
+\begin{center}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{c|cccccccccccc}
+  \centering
+  Elasticity & Brand 1 & Brand 2 & Brand 3 & Brand 4 & Brand 5 & Brand 6 & Brand 7 & Brand 8 & Brand 9 & Brand 10 & Brand 11 \\
+  \hline
+  Brand 1     &      -0.102610     &      53.287470       &    50.205916     &      54.212901      &     52.644678   & 27.714953 &           54.228711       &    54.076155      &    53.797248      &     54.355579     &       53.359324 \\
+  Brand 2     &     144.360424     &      -1.003716       &   134.026023     &     144.621892      &    140.488468   & 74.092455 &           144.663388      &    144.263279     &    143.530326     &     144.995183    &      142.377609 \\
+  Brand 3     &   1090.414504      &   1074.182485        &  -31.830924      &   1092.357962       &  1061.499594    & 560.808588 &         1092.666478      &   1089.693739     &   1084.237476     &    1095.124921    &    1075.642841 \\
+  Brand 4     &      40.167548     &      39.552353       &    37.259985     &      -0.052691      &     39.073744   & 20.560048 &           40.253664       &    40.139866      &    39.931938      &     40.348377     &      39.605615 \\
+  Brand 5     &     701.836153     &     691.295844       &   651.709492     &     703.101682      &     -7.814711    & 360.420087 &          703.302540     &     701.366199    &     697.817145    &      704.907058   &      692.233098 \\
+  Brand 6     &  120811.876382     &  119042.871613       & 112331.493259    &   121022.577041     &  117657.194020   & -74760.321087 &       121056.036767  &     120733.922444 &     120141.159128 &      121321.443238 &     119205.457062 \\
+  Brand 7     &      47.632390     &      46.902176       &    44.182254     &      47.720638      &     46.334167    & 24.377168 &          -0.058094       &    47.599518      &    47.352670      &     47.847119      &     46.965313 \\
+  Brand 8     &     122.448077     &     120.580235       &   113.608910     &     122.673453      &    119.126205    & 62.717840 &          122.709211      &     -0.258979     &    121.733373     &     122.996109     &     120.742852 \\
+  Brand 9     &     432.319919     &     425.758167       &   401.218512     &     433.110410      &    420.646250    &  221.618836 &          433.235842    &      432.025909   &       -1.636004   &       434.240818   &       426.333371 \\
+  Brand 10    &      6.363946      &      6.265662        &    5.900743      &      6.375854       &     6.189303     & 3.254419 &            6.377742       &     6.359505      &     6.326229      &     -0.003136      &      6.271761 \\
+  Brand 11    &     2485.235226    &     2447.692638      &   2307.054858    &     2489.751964     &    2418.426565   & 1275.563088 &        2490.468731     &    2483.556346    &    2470.899713    &     2496.137445    &      -16.421917 \\
+  \hline
+\end{tabular}
+} \\
+\end{center}
+We can see that while the direction of these elasticities are all in the right direction (it it reasonable to believe headache medicines are all substitutes), the magnitudes of these elasticites are far from believable.
+
+\item Marginal Costs are backed out from the matrix equation and are given in the table below. Derivatives were used to calculate elasticites as well, so these were not so difficult to back out.
+$$mc = p + \left(\Omega\frac{\partial s}{\partial p}\right)^{-1}s $$
+\begin{center}
+\begin{tabular}{c|cc}
+  \hline
+   	& Predicted Cost & Real Cost \\
+\hline
+Brand 1	   & 3.286473 & 2.10 \\
+Brand 2    & 4.893866 & 3.29  \\
+Brand 3    & 6.433948  & 5.66 \\
+Brand 4    & 2.816811  & 2.10\\
+Brand 5    & 5.340699 & 3.46\\
+Brand 6    & 8.440821 & 5.76\\
+Brand 7    & 2.710318 & 1.79 \\
+Brand 8    & 3.369950  & 2.08\\
+Brand 9    & 4.018240  & 3.71\\
+Brand 10    & 1.482611 &  0.94\\
+Brand 11    & 4.5459910 & 1.92\\
+\hline
+\end{tabular}
+\end{center}
+
+Overall the predicted costs do a reasonable job of estimating the true marginal costs. Brand 4's marginal cost is predicted quite well, and brand 6 has both the highest predicted costs and real maringal costs.
+
+\end{enumerate}
+
+\section{Merger Analysis}
+
+\begin{enumerate}
+  \item We rearrange the same matrix equation as before to get
+ $$p = mc - \left(\Omega\frac{\partial s}{\partial p}\right)^{-1}s $$
+  To predict prices under the merger, we change the ownership matrix $\Omega$. However, the new $\Omega$ is not invertible. We then look for prices to solve:
+  $$\arg\min_p s + \Omega\frac{\partial s}{\partial p}(p - mc)$$
+
+  We use a numerical minization routine in python to do this. The resulting predicted prices are given in Table \ref{logPred}.  These are in line with what we may expect, prices for the merged brands generally go up, whereas prices for the unmerged brands remain the same.
+
+  \begin{center}
+  \begin{table}[!htb]
+  \centering
+  \begin{tabular}{c|c c}
+    \hline
+    Brand & Predicted Price & Current Mean Price \\
+    \hline
+    Brand 1 & 4.5128 & 3.420465  \\
+    Brand 2 & 6.28072475 & 4.942023 \\
+    Brand 3 & 7.90219562 & 7.016067\\
+    Brand 4 & 3.86929228 & 2.963647 \\
+    Brand 5 & 5.74455273 & 5.145023\\
+    Brand 6 & 8.4353255  & 8.159743\\
+    Brand 7 & 2.98294236 & 2.673054 \\
+    Brand 8 & 3.86456454 & 3.607203 \\
+    Brand 9 & 4.57602604 & 3.966644\\
+    Brand 10 & 1.93163615  & 1.928476\\
+    Brand 11 &4.4471724 & 4.447172 \\
+    \hline
+  \end{tabular}
+  \caption{Predicted Prices Post Merger from Logit Model}
+  \label{logPred}
+\end{table}
+  \end{center}
+
+
+
+  \item Finding elasticities with BLP would follow a similar procedure as in the last step. However, solving for the derivative would be somewhat more involved. Fortunately, we already have the derivatives from solving for elasticities.
+
+  \item We use the derivatives from the elasticity segment and the matrix equation above to solve for predicted prices under the merger. Once again, we note that the matrix $\Omega$ is not invertible, so we look for a numerical solution.  Results are given in Table 5.\\
+  \begin{center}
+  \begin{table}[!htb]
+  \centering
+  \begin{tabular}{lrr}
+  \hline
+  {} &  Predicted Price &  Current Price \\
+  \hline
+  Brand 1  &         3.391746 &           3.29 \\
+  Brand 2  &         4.953639 &           4.87 \\
+  Brand 3  &         6.395938 &           6.38 \\
+  Brand 4  &         2.933929 &           2.83 \\
+  Brand 5  &         5.359535 &           5.29 \\
+  Brand 6  &         7.885246 &           8.39 \\
+  Brand 7  &         2.814275 &           2.71 \\
+  Brand 8  &         3.440935 &           3.34 \\
+  Brand 9  &         4.064824 &           3.97 \\
+  Brand 10 &         1.277707 &           1.69 \\
+  Brand 11 &         4.070670 &           4.49 \\
+  \hline
+  \end{tabular}
+\caption{Predicted Prices Post Merger from BLP Model}
+\end{table}
+\end{center}
+
+From this we see that the model predicts that the merged firms will generally raise their prices. However it also predicts that the non merged firms will lower their prices, which may not be a reasonable prediction from the model. I think there could be a problem here since the matrix equation could have multiple solutions. That is, there could be multiple equilibria to this model.
+
+\end{enumerate}
+
+\newpage
+
+\begin{table}[!htbp] \centering
+  \label{}
+\begin{tabular}{@{\extracolsep{5pt}}lcc}
+\\[-1.8ex]\hline
+\hline \\[-1.8ex]
+& \multicolumn{1}{c}{\textit{Dependent variable:}} \
+\cr \cline{1-2}
+\\[-1.8ex] & (1) \\
+\hline \\[-1.8ex]
+ $brand_1$ & -6.073$^{***}$ \\
+  & (0.036) \\
+  & \\
+ $brand_{10}$ & -7.278$^{***}$ \\
+  & (0.023) \\
+  & \\
+ $brand_{11}$ & -6.862$^{***}$ \\
+  & (0.047) \\
+  & \\
+ $brand_2$ & -5.384$^{***}$ \\
+  & (0.051) \\
+  & \\
+ $brand_3$ & -5.144$^{***}$ \\
+  & (0.072) \\
+  & \\
+ $brand_4$ & -6.503$^{***}$ \\
+  & (0.032) \\
+  & \\
+ $brand_5$ & -6.266$^{***}$ \\
+  & (0.053) \\
+  & \\
+ $brand_6$ & -6.071$^{***}$ \\
+  & (0.083) \\
+  & \\
+ $brand_7$ & -7.725$^{***}$ \\
+  & (0.03) \\
+  & \\
+ $brand_8$ & -7.665$^{***}$ \\
+  & (0.039) \\
+  & \\
+ $brand_9$ & -6.62$^{***}$ \\
+  & (0.042) \\
+  & \\
+ price & -0.341$^{***}$ \\
+  & (0.01) \\
+  & \\
+ prom & 0.329$^{***}$ \\
+  & (0.013) \\
+  & \\
+\hline \\[-1.8ex]
+ Observations & 38544.0 \\
+ R${2}$ & 0.46 \\
+ Adjusted R${2}$ & 0.46 \\
+ Residual Std. Error & 0.668(df = 38531.0)  \\
+ F Statistic & 2733.882$^{***}$ (df = 12.0; 38531.0) \\
+\hline
+\hline \\[-1.8ex]
+\end{tabular}
+\end{table}
+
+\end{document}
