@@ -14,9 +14,13 @@ from matplotlib.pyplot import figure
 from scipy.stats import norm
 import multiprocessing
 from joblib import Parallel, delayed
+from scipy.optimize import minimize
 import itertools
 num_cores = multiprocessing.cpu_count()
 data = pd.read_csv('dataCleaned2.csv')
+
+#Specify the number of computer cores you want to use to run BLP
+cores_to_use = 4
 
 ## Code for faster Groupby Operations
 class Groupby:
@@ -126,7 +130,7 @@ def shares3Par(d, sB, sI, df):
         for s2 in split2:
             interim.append([s1,s2])
     if __name__ == "__main__":
-        totals = Parallel(n_jobs = 6)(delayed(shares3)(i[0], i[1], d, sB, sI, df) for i in interim)
+        totals = Parallel(n_jobs = cores_to_use)(delayed(shares3)(i[0], i[1], d, sB, sI, df) for i in interim)
     new = 0
     for p in totals:
         new =  new + p
@@ -173,8 +177,23 @@ def ivEval(d, df):
     return np.abs(np.dot(np.dot(outer.transpose(), omega), outer))
 
 
-#### Now Put It All Together
+## Run BLP Once
+def runOnce(sigma_array):
+    sigmaB = sigma_array[0]
+    sigmaI = sigma_array[1]
+    data['delta'] = 1/12
+    delta  = 0
+    deltaNew = np.exp(data['delta'])
+    counter = 0
+    while np.linalg.norm(deltaNew - delta) > 1 and counter < 50:
+        counter +=1
+        delta = deltaNew
+        deltaNew = deltaNext2(delta, sigmaB, sigmaI, data)
+    delta = np.log(deltaNew)
+    criterion = ivEval(delta, data)
+    return criterion
 
+#### Now Put It All Together
 def runBLP(array,  gridSize= 100):
     b11 = array[0]
     b12 = array[1]
@@ -220,6 +239,16 @@ def runBLP(array,  gridSize= 100):
     print("sigmaI = ", sImin)
     return sBmin, sImin, deltaMin, critList, sigmaGrid
 
-test1 = runBLP([0.0, 0.3, 0.0, 0.2], 16)
+# Test 1 solves BLP by grid search (brute force approach). Set the array to the grid you want to look over,
+## First argument (list) is [sigmaB_lower_bound, sigmaB_upper_bound, sigmaI_lower_bound, sigmaI_upper_bound]
+## Second argument (integer) is how many elements you want in the grid. Should be a square (16.25.100, etc. )
 
-pd.DataFrame([test1[2], test2[2], test3[2]]).to_csv("deltas2.csv")
+#test1 = runBLP([0.0, 0.3, 0.0, 0.2], 16)
+
+
+# Second test solves BLP using the run once function and an gradient descent in python.
+## This is faster computationally and is reccomended.
+
+init = np.array([0.1,0.1])
+test2 = minimize(runOnce, init)
+result = test2.x
