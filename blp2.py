@@ -175,7 +175,11 @@ def ivEval(d, df):
 
 #### Now Put It All Together
 
-def runBLP(b11, b12, b21, b22, gridSize):
+def runBLP(array,  gridSize= 100):
+    b11 = array[0]
+    b12 = array[1]
+    b21 = array[2]
+    b22 = array[3]
     critList = []
     print("Starting BLP")
     currentMin = 10000
@@ -216,6 +220,6 @@ def runBLP(b11, b12, b21, b22, gridSize):
     print("sigmaI = ", sImin)
     return sBmin, sImin, deltaMin, critList, sigmaGrid
 
-test1 = runBLP(0.0, 0.3, 0.0, 0.2, 16)
+test1 = runBLP([0.0, 0.3, 0.0, 0.2], 16)
 
 pd.DataFrame([test1[2], test2[2], test3[2]]).to_csv("deltas2.csv")
